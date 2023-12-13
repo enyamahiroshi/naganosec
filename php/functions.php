@@ -28,16 +28,21 @@ add_filter( 'allow_major_auto_core_updates', '__return_true' );
 function import_header_scripts01() {
   // スライダー（Slider Pro）：http://sterfield.co.jp/demo/abe/49/
   wp_enqueue_style( 'slider-pro', get_template_directory_uri() . '/css/slider-pro-master/slider-pro.css');
+  wp_enqueue_style( 'scroll-hint', get_template_directory_uri() . '/css/scroll-hint.css');
   wp_enqueue_style( 'style', get_template_directory_uri() . '/style.css');
+  wp_enqueue_style( 'add', get_template_directory_uri() . '/add.css');
 }
 add_action( 'wp_enqueue_scripts', 'import_header_scripts01' );
 
 // ▼ JSファイル追加
 function my_load_widget_scripts() {
+  wp_enqueue_script( 'inview', get_template_directory_uri() . '/js/jquery.inview.min.js', true, array());
   wp_enqueue_script( 'main', get_template_directory_uri() . '/js/menu.js', true, array());
   wp_enqueue_script( 'script', get_template_directory_uri() . '/js/script.js', true, array());
   // スライダー（Slider Pro）：http://sterfield.co.jp/demo/abe/49/
   wp_enqueue_script( 'slider-pro', get_template_directory_uri() . '/js/slider-pro-master/jquery.sliderPro.min.js', true, array());
+  wp_enqueue_script( 'scroll-hint', get_template_directory_uri() . '/js/scroll-hint.min.js', true, array());
+  wp_enqueue_script( 'run-scroll-hint', get_template_directory_uri() . '/js/run-scroll-hint.js', true, array());
   // フォーム関連
   if( is_page('order-shop') ) {
       wp_enqueue_script( 'form', get_template_directory_uri() . '/js/form.js', true, array());

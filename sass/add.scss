@@ -1,4 +1,858 @@
 @use './_core/valiables' as *;
 @use './_core/mixins' as *;
 
-//2023/12/03 新nisaページ
+// --------------------------------------
+// 共通
+// --------------------------------------
+picture,
+figure{
+  display: block;
+}
+
+.em-text1{
+  color: #333;
+}
+
+//data-style の文字を先頭にする
+.list-data_style{
+  margin: 1em 0;
+}
+.list-data_style > li{
+  margin: 0 0 1.5em 2em;
+  position: relative;
+}
+.list-data_style > li::before{
+  content: attr(data-style);
+  margin-right: 1em;
+  margin-left: -1.5em;
+  position: absolute;
+  left: 0;
+}
+
+.text-link1{
+  &:link, &:visited{
+    color: $linkColor;
+    text-decoration: underline;
+  }
+  &:hover, &:active{
+  }
+}
+
+.em-blk{
+  color: $textBaseColor;
+}
+
+.anchor-nav{
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr;
+  row-gap: 10px;
+  .anchor-link{
+    font-size: 17px;
+    font-weight: 700;
+    text-align: center;
+    line-height: calc(25.5 / 17);
+    color: $mainColor;
+    padding: 11px 10px;
+    background-color: #E6EEF2;
+    border: 2px solid #90C3DC;
+    border-radius: 4px;
+  }
+}
+@include res_min(){
+  .anchor-nav{
+    margin-left: 24px;
+    margin-right: 24px;
+    .anchor-link{
+      font-size: 21px;
+      text-align: left;
+      padding: 6px 20px;
+    }
+  }
+}
+
+.title01{
+  margin-top: 1em;
+  font-size: 18px;
+  font-weight: bold;
+}
+@include res_min(){
+  .title01{
+    font-size: 21px;
+  }
+}
+
+.indent-text{
+  margin: 0.8em 1em 0;
+  line-height: calc(26 / 14);
+}
+@include res_min(){
+  .indent-text{
+    margin: 0.8em 0 0;
+    line-height: calc(26 / 14);
+  }
+}
+
+
+// ----- inview
+/* フェードイン(初期値) */
+.js-fadeUp {
+  opacity: 0; /* 最初は非表示 */
+  transform: translateY(10px); /* 下に30pxの位置から */
+  transition: opacity .8s, transform .8s; /* 透過率と縦方向の移動を0.8秒 */
+}
+/* フェードイン(スクロールした後) */
+.js-fadeUp.is-active {
+  opacity: 1; /* 表示領域に入ったら表示 */
+  transform: translateY(0); /* 30px上に移動する */
+  transition-delay: .5s; /* フェード開始を0.5秒遅らせる */
+
+  //個別にタイミングをずらす
+  &.fukidashi2{
+    transition-delay: .7s;
+  }
+}
+
+
+// ----- scroll hint
+.scrollable-hint{
+  text-align: center;
+  img{
+    width: auto;
+    height: 40px;
+  }
+}
+@include res_min(){
+  .scrollable-hint{
+    display: none;
+  }
+}
+.scrollable-wrap{
+  padding: 25px 10px;
+  margin-top: 10px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  //スクロールする表
+  .new-nisa-outline__image{
+    width: 800px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-rows: 140px 1fr;
+    grid-template-columns: 1fr;
+    //吹き出しボックス
+    .new-nisa-outline__image__fukidashi{
+      display: grid;
+      grid-template-columns: repeat(3, 264px);
+      gap: 4px;
+      //吹き出し
+      .fukidashi1,
+      .fukidashi2{
+        width: 264px;
+        height: auto;
+      }
+      .fukidashi1{
+        grid-column-start: 2;
+      }
+      .fukidashi2{
+        grid-column-start: 3;
+      }
+    }
+    //表
+    .new-nisa-outline__image__table{}
+  }
+}
+.scroll-hint-icon-wrap{ //スクロールヒントのアイコンを非表示
+  display: none !important;
+}
+@include res_min(){
+  .scrollable-wrap{
+    padding: 0;
+    margin-top: 0;
+    border: none;
+  }
+}
+
+
+// ----- 開閉ブロック
+.js-tgl-ocButton{ //矢印ボタン
+  cursor: pointer;
+  position: relative;
+  &::after{
+    content: '';
+    width: 16px;
+    height: 10px;
+    background-color: $mainColor;
+    -webkit-mask-image: url(img/nisa/ico-arrow.svg);
+            mask-image: url(img/nisa/ico-arrow.svg);
+    -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+            mask-position: center;
+    -webkit-mask-size: 100%;
+            mask-size: 100%;
+    position: absolute;
+    top: 50%;
+    right: 9px;
+    transform: translateY(-50%);
+    @include transition();
+  }
+  &.is-active{
+    &::after{
+      transform: translateY(-50%) rotate(180deg);
+    }
+  }
+}
+@include res_min(){
+  .js-tgl-ocButton{
+    &::after{
+      right: 17px;
+    }
+  }
+}
+
+//基本的な開閉アイテム
+.open-close-block{
+  margin-top: 10px;
+  .open-close-block__title{
+    padding: 10px 45px 10px 20px;
+    background-color: #DAE8EF;
+    font-size: 16px;
+    font-weight: 600;
+  }
+}
+@include res_min(){
+  .open-close-block{
+    .open-close-block__title{
+      padding: 9px 65px 9px 22px;
+      font-size: 21px;
+      &.is-active{
+        background-color: #A1D0F8;
+      }
+    }
+  }
+}
+
+.open-close-block__contents{
+  display: none;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+@include res_min(){
+  .open-close-block__contents{
+    padding: 25px 35px;
+    border: 1px solid #ccc;
+    border-top: none;
+  }
+}
+
+
+
+// --------------------------------------
+// 2023/12/03 新nisaページ追加
+// --------------------------------------
+
+//NISA（ニーサ）ってなに？
+.sec-what-nisa{
+  margin-top: 30px;
+  .sec-image{
+    margin: 23px auto 0;
+    max-width: 450px;
+  }
+  .what-nisa__outro{
+    margin-top: 18px;
+    strong{
+      display: block;
+      font-size: 22px;
+      font-weight: bold;
+      line-height: calc(30 / 22);
+      color: #A6375A;
+      text-align: center;
+    }
+    p{
+      margin: 1em 1em 0;
+    }
+  }
+}
+@include res_min(){
+  .sec-what-nisa{
+    margin-top: 40px;
+    .sec-image{
+      margin-top: 30px;
+      max-width: 870px;
+    }
+    .what-nisa__outro{
+      margin-top: 35px;
+      strong{
+        font-size: 28px;
+      }
+      p{
+        text-align: center;
+      }
+    }
+  }
+}
+
+//新しいポイント
+.contblock01-title{
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+  &::before{
+    content: '';
+    width: 20px;
+    height: 20px;
+    background-image: url(img/nisa/ico-point.png);
+    background-size: cover;
+    margin-right: 8px;
+  }
+}
+@include res_min(){
+  .contblock01-title{
+    margin-top: 40px;
+    margin-left: 20px;
+    font-size: 22px;
+    &::before{
+      margin-right: 10px;
+    }
+  }
+}
+
+.contblock01{
+  margin-top: 20px;
+  .contblock01__title{
+    font-size: 18px;
+    font-weight: bold;
+    color: $mainColor;
+    line-height: calc(30 / 18);
+    background-color: #F0F0F7;
+    padding: 7px 15px;
+    position: relative;
+  }
+  .indent-text{
+    margin: 1em 1em 0;
+  }
+  //ナンバリング
+  &.numbering-item{
+    counter-increment: point;
+    .contblock01__title{
+      padding-left: calc(1.2em + 15px);
+      &::before{
+        content: counter(point)'.';
+        position: absolute;
+        left: 15px;
+      }
+    }
+  }
+  .sec-point-nisa &{
+    margin-top: 10px;
+    &:first-of-type{
+      margin-top: 20px;
+    }
+    .js-oc-target{
+      padding-bottom: 20px;
+    }
+  }
+}
+@include res_min(){
+  .contblock01{
+    margin-top: 50px;
+    &:first-of-type{
+      margin-top: 15px;
+    }
+    .contblock01__title{
+      font-size: 21px;
+      line-height: calc(30 / 21);
+      padding: 6px 22px;
+    }
+    .indent-text{
+      margin: 1.25em 1.25em 0;
+    }
+    //ナンバリング
+    &.numbering-item{
+      .contblock01__title{
+        padding-left: calc(1.2em + 22px);
+        &::before{
+          left: 22px;
+        }
+      }
+    }
+    .sec-point-nisa &{
+      .js-oc-target{
+        padding-bottom: 30px;
+      }
+    }
+  }
+}
+
+.contblock01__image{
+  margin: 20px auto 0;
+  max-width: 450px;
+  @include res_min(){
+    margin-top: 40px;
+  }
+  //個別に
+  .point-2 &{
+    @include res_min(){
+      max-width: 533px;
+    }
+  }
+  .point-3 &{
+    @include res_min(){
+      width: calc(100% - 2em);
+      max-width: 100%;
+    }
+  }
+  .point-4 &{
+    @include res_min(){
+      max-width: 426px;
+    }
+  }
+  .point-5 &{
+    @include res_min(){
+      width: calc(100% - 2em);
+      max-width: 100%;
+    }
+  }
+}
+
+.new-nisa-outline{
+  margin-top: 25px;
+  .notes{
+    margin: 18px;
+    font-size: 12px;
+    line-height: calc(20 / 12);
+  }
+}
+@include res_min(){
+  .new-nisa-outline{
+    margin-top: 10px;
+  }
+}
+
+.nisa-shintaku{
+  margin: 1em 18px 40px;
+  font-weight: 600;
+}
+@include res_min(){
+  .nisa-shintaku{
+    margin-bottom: 50px;
+  }
+}
+
+.nisa-comparison{
+  .nisa-comparison__image{
+    margin: 0 auto;
+    width: 556px;
+    img{
+      margin-right: 10px;
+    }
+  }
+  p{
+    margin-top: 20px;
+  }
+}
+@include res_min(){
+  .nisa-comparison{
+    .nisa-comparison__image{
+      img{
+        margin-right: 0;
+      }
+    }
+    p{
+      margin-top: 35px;
+      font-size: 14px;
+    }
+  }
+}
+
+
+.step-nisa{
+  margin-top: 15px;
+  .step-nisa__item{
+    padding: 15px;
+    border-radius: 6px;
+    position: relative;
+    &:not(:last-of-type){
+      margin-bottom: 40px;
+      &::after{
+        content: '';
+        width: 100%;
+        height: 23px;
+        background-image: url(img/nisa/ico-arrow2.svg);
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: auto 100%;
+        position: absolute;
+        left: 0;
+        bottom: -32px;
+      }
+    }
+    dt{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: transparent;
+      padding: 0;
+      h4{
+        font-size: 17px;
+        font-weight: bold;
+        color: #fff;
+        line-height: 1;
+        vertical-align: bottom;
+        span{
+          margin-left: 3px;
+          font-size: 150%;
+        }
+      }
+    }
+    dd{
+      margin-top: 1em;
+      font-weight: 600;
+      line-height: calc(26 / 14);
+      p{
+        margin: 0;
+      }
+    }
+
+    //個別
+    &:nth-of-type(1){
+      background-color: #90C3DC;
+    }
+    &:nth-of-type(2){
+      background-color: #90D4C6;
+    }
+    &:nth-of-type(3){
+      background-color: #90DCA2;
+    }
+  }
+}
+@include res_min(){
+  .step-nisa{
+    margin: 60px 20px 0;
+    .step-nisa__item{
+      padding: 25px;
+      border-radius: 12px;
+      display: grid;
+      grid-template-columns: 134px 1fr;
+      &:not(:last-of-type){
+        margin-bottom: 60px;
+        &::after{
+          content: '';
+          height: 28px;
+          bottom: -44px;
+        }
+      }
+      dt{
+        justify-content: flex-start;
+        h4{
+          font-size: 21px;
+        }
+      }
+      dd{
+        margin-top: 0;
+        line-height: calc(26 / 14);
+      }
+    }
+  }
+}
+
+.how-to-account-open{
+  margin-top: 20px;
+}
+@include res_min(){
+  .how-to-account-open{
+    margin-top: 50px;
+  }
+}
+
+.key1-contents{
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-flow: 1fr;
+  row-gap: 20px;
+  .key1 {
+    background-color: #F7E4E1;
+    border-radius: 10px 10px 0 0;
+    overflow: hidden;
+    .key1__title {
+      padding: 12px 10px;
+      background-color: #F58771;
+      font-size: 18px;
+      font-weight: bold;
+      line-height: 1;
+      text-align: center;
+      color: #fff;
+    }
+    .key1__body{
+      padding: 20px 15px;
+      p{
+        em{
+          color: $textBaseColor;
+        }
+      }
+      .key1__image{
+        margin: 0 auto;
+        figcaption{
+          margin-top: 10px;
+          width: 100%;
+          font-size: 12px;
+          line-height: 1;
+          text-align: right;
+        }
+      }
+    }
+    //個別
+    &:nth-of-type(1){
+      .key1__body{
+        .key1__image{
+          width: 89%;
+          max-width: 291px;
+        }
+      }
+    }
+    &:nth-of-type(2){
+      .key1__body{
+        .key1__image{
+          width: 72%;
+          max-width: 232px;
+        }
+      }
+    }
+    &:nth-of-type(3){
+      .key1__body{
+        .key1__image{
+          width: 100%;
+          max-width: 326px;
+        }
+      }
+    }
+  }
+}
+@include res_min(){
+  .key1-contents{
+    margin-top: 40px;
+    grid-template-columns: repeat(3, 1fr);
+    -moz-column-gap: 25px;
+         column-gap: 25px;
+    .key1 {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      .key1__body{
+        height: 100%;
+        padding: 20px 24px 24px;
+        margin-top: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        p{
+          margin-bottom: 20px;
+          font-size: 14px;
+          line-height: calc(21 / 14);
+        }
+        .key1__image{
+          margin-top: auto;
+          height: 96px;
+          display: flex;
+          flex-wrap: wrap;
+          img{
+            margin: auto;
+          }
+        }
+      }
+      //個別
+      &:nth-of-type(1){
+        .key1__body{
+          .key1__image{
+            width: 98%;
+          }
+        }
+      }
+      &:nth-of-type(2){
+        .key1__body{
+          .key1__image{
+            width: 76%;
+          }
+        }
+      }
+    }
+  }
+}
+
+.key2-contents{
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+@include res_min(){
+  .key2-contents{
+    margin: 40px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+}
+
+.key3-figures{
+  margin-top: 30px;
+  .key3-figures__image{
+    width: 872px;
+  }
+}
+@include res_min(){
+  .key3-figures{
+    margin-top: 45px;
+  }
+}
+
+.key3-contents{
+  margin-top: 20px;
+  .key3-column {
+    &:not(:first-of-type){
+      margin-top: 40px;
+    }
+    .column-title {
+      display: inline-flex;
+      font-size: 18px;
+      font-weight: bold;
+      line-height: calc(30 / 18);
+      &::before{
+        content: '';
+        width: 20px;
+        height: 20px;
+        background-image: url(img/nisa/ico-question.png);
+        background-size: cover;
+        margin-top: 3px;
+        margin-right: 8px;
+      }
+    }
+    .column-image {
+      margin: 10px auto;
+      max-width: 450px;
+      figcaption{
+        margin-top: 10px;
+        text-align: center;
+      }
+    }
+    .column-strong {
+      display: block;
+      margin: 20px auto;
+      font-size: 18px;
+      font-weight: bold;
+      line-height: calc(30 / 18);
+      text-align: center;
+      color: $textBaseColor;
+      em{
+        color: #ff8550;
+      }
+    }
+    .indent-text {
+    }
+  }
+}
+@include res_min(){
+  .key3-contents{
+    margin-top: 45px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 52px;
+    .key3-column {
+      &:not(:first-of-type){
+        margin-top: 0;
+      }
+      .column-title {
+        font-size: 19px;
+        &::before{
+          margin-top: 4px;
+        }
+      }
+      .column-image {
+        figcaption{
+          font-size: 15px;
+        }
+      }
+      .column-strong {
+        font-size: 20px;
+        line-height: calc(33 / 20);
+      }
+    }
+  }
+}
+
+.key4-contents{
+  margin: 20px auto;
+  max-width: 450px;
+}
+@include res_min(){
+  .key4-contents{
+    margin: 45px auto;
+    max-width: 832px;
+  }
+}
+
+//faq
+.faq-sub-title{
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: $mainColor;
+  background-color: #F5F5F5;
+  padding: 10px 14px;
+}
+.q.open-close-block__title{
+  padding-left: 38px;
+  &::before{
+    content: '';
+    width: 18px;
+    height: 18px;
+    background-image: url(img/nisa/ico-q.svg);
+    background-size: cover;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+  }
+}
+.a.open-close-block__contents{
+  padding-left: 38px;
+  position: relative;
+  &::before{
+    content: '';
+    width: 18px;
+    height: 18px;
+    background-image: url(img/nisa/ico-a.svg);
+    background-size: cover;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+  }
+}
+@include res_min(){
+  .faq-sub-title{
+    margin-top: 40px;
+  }
+  .q.open-close-block__title{
+    padding-left: 45px;
+    &::before{
+      width: 20px;
+      height: 20px;
+      left: 14px;
+      top: 13px;
+    }
+  }
+  .a.open-close-block__contents{
+    padding-left: 45px;
+    padding-top: 9px;
+    padding-bottom: 10px;
+    &::before{
+      width: 20px;
+      height: 20px;
+      left: 14px;
+      top: 13px;
+    }
+  }
+}

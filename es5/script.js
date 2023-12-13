@@ -1,5 +1,32 @@
 (function($) {
 
+  const activeClass = "is-active";
+
+/* --------------------------------------------------
+  inview
+-------------------------------------------------- */
+  $(".js-fadeUp").on("inview", function () {
+    $(this).addClass(activeClass);
+  });
+
+/* --------------------------------------------------
+  開閉
+-------------------------------------------------- */
+  const ocButton = $('.js-tgl-ocButton');
+  const ocTarget = $('.js-oc-target');
+
+  ocTarget.hide();
+
+  ocButton.on('click', function () {
+    if ($(this).hasClass(activeClass)) {
+      $(this).removeClass(activeClass);
+      $(this).next(ocTarget).slideToggle('fast');
+    } else {
+      $(this).addClass(activeClass);
+      $(this).next(ocTarget).slideToggle('fast');
+    }
+  });
+
 /* --------------------------------------------------
   採用情報：つづきを読むボタン処理
 -------------------------------------------------- */

@@ -248,7 +248,7 @@
         <tr>
           <th scope="row" class="cell-type2">国内インデックス型</th>
           <td class="cell-fundname"><a href="https://www.am-one.co.jp/fund/summary/313992/" target="_blank" rel="noopener noreferrer">MHAM J-REITインデックスファンド（隔月決算型）</a></td>
-          <td class="cell-label"></td>
+          <td class="cell-label"><span class="label label-seicho">成長投資枠</span></td>
           <td class="cell-company">アセットマネジメントOne</td>
           <td class="cell-company"><a class="cell_pdf" href="<?php echo get_stylesheet_directory_uri(); ?>/pdf/mham_j-reit2.pdf" target="_blank" rel="noopener noreferrer"></a></td>
         </tr>
